@@ -22,7 +22,7 @@ app.use('/api/faculty',facultyRoute);
 app.use('/api/subject',subjectRoute);
 app.use('/api/quiz',quizRoute);
 
-app.listen(4193, ()=>{
+app.listen(config.app.local.port, ()=>{
     console.log("\n\n App listening... \n\n");
 })
 
