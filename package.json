@@ -7,6 +7,10 @@
     "dev": "nodemon App.js",
     "start": "node App.js"
   },
+  "keywords": [
+    "heroku",
+    "example"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
