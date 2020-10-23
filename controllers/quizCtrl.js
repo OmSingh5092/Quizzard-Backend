@@ -112,8 +112,23 @@ const getQuizByStudent = async (req,res)=>{
             msg:"Internal Server Error!",
         })
     }
-    
-
 }
 
-module.exports = {createQuiz,getQuizByFaculty,getQuizBySubject,getQuizByStudent};
+const getQuiz = async (req,res)=>{
+    const id = req.headers.id;
+    try{
+        const quiz = await Quiz.findById(id);
+        return res.status(200).json({
+            success:true,
+            quiz:quiz,
+        })
+    }catch(err){
+        console.log("Error",err);
+        return res.status(500).json({
+            success:false,
+            msg:"Internal server error!",
+        })
+    }
+}
+
+module.exports = {createQuiz,getQuizByFaculty,getQuizBySubject,getQuizByStudent,getQuiz};

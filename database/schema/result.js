@@ -2,19 +2,28 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const student = new Schema(
+const result = new Schema(
     {  
+        student:{
+            type:String,
+        },
+        quiz:{
+            type:String,
+        },
+        subject:{
+            type:String,
+        },
         score:{
             type:Number
         },
         total:{
             type:Number,
         },
-        start_time:{
-            type:String
-        },
         submit_time:{
             type:String,
+        },
+        responses:{
+            type:Array,
         }
         
     },
@@ -23,4 +32,4 @@ const student = new Schema(
     }
 )
 
-module.exports = mongoose.model("result",student);
+module.exports = mongoose.model("result",result);
