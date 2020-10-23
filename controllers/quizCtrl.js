@@ -25,7 +25,7 @@ const createQuiz = (req,res)=>{
         //Setting timer for stopping live quiz
         setTimeout(function(){
             console.log("Stopping live quiz!")
-            Quiz.updateOne({_id:doc._id},{is_live:false})
+            Quiz.updateOne({_id:doc._id},{is_live:false,is_completed:true})
             .then((doc)=>{
                 websocket.quizSocket.quizStop(doc._id);
             })
@@ -48,8 +48,10 @@ const createQuiz = (req,res)=>{
 
 const getQuizByFaculty = (req,res)=>{
     const id = req.user.id;
+    //taking completed argument from the header
+    const completed = req.headers.completed;
 
-    Quiz.find({faculty:id})
+    Quiz.find({faculty:id,is_completed:completed})
     .then((docs)=>{
         return res.status(200).json({
             success:true,
@@ -131,4 +133,4 @@ const getQuiz = async (req,res)=>{
     }
 }
 
-module.exports = {createQuiz,getQuizByFaculty,getQuizBySubject,getQuizByStudent,getQuiz};
+module.exports = {createQuiz,getQuizByFaculty,getPastQuizByFaculty,getQuizBySubject,getQuizByStudent,getQuiz};
