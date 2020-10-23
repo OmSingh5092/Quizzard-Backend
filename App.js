@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const config = require('./config');
 const database = require('./database/database');
-
+const http = require('http');
 require('./passport');
 
 //Applying middlewares
@@ -22,7 +22,18 @@ app.use('/api/faculty',facultyRoute);
 app.use('/api/subject',subjectRoute);
 app.use('/api/quiz',quizRoute);
 
-app.listen(config.app.local.port, ()=>{
+const server = http.createServer(app);
+
+const io = require('socket.io')(server);
+module.exports.io = io;
+io.on("connection",(socket)=>{
+    console.log("Client Connected...");
+    const websocket = require('./websocket');
+    websocket.setWebSocket(socket,io);
+})
+
+
+server.listen(config.app.local.port, ()=>{
     console.log("\n\n App listening... \n\n");
 })
 
