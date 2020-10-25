@@ -1,12 +1,13 @@
+const { $where } = require('../database/schema/quiz');
 const Quiz = require('../database/schema/quiz');
 const Student = require('../database/schema/student');
 const websocket = require('../websocket');
 
 const createQuiz = (req,res)=>{
     const body = req.body;
-
+    const id = req.user.id;
     const quiz = new Quiz(body);
-    
+    quiz.faculty = id;
     quiz.save()
     .then((doc)=>{
         const date = new Date();
@@ -51,13 +52,14 @@ const getQuizByFaculty = (req,res)=>{
     //taking completed argument from the header
     const completed = req.headers.completed;
 
-    Quiz.find({faculty:id,is_completed:completed})
+    Quiz.find({$and:[{faculty:id},{is_completed:completed}]})
     .then((docs)=>{
         return res.status(200).json({
             success:true,
             quizzes: docs,
         })
     }).catch((err)=>{
+        console.log("Error",err);
         return res.status(500).json({
             success:false,
             msg:"Internal Server Error!",
@@ -85,6 +87,9 @@ const getQuizBySubject = (req,res)=>{
 const getQuizByStudent = async (req,res)=>{
     const id = req.user.id;
 
+    //taking completed argument from the header
+    const completed = req.headers.completed;
+
     try{
         const student = await Student.findById(id);
 
@@ -101,7 +106,7 @@ const getQuizByStudent = async (req,res)=>{
             })
         }
 
-        const quizzes = await Quiz.find({$or:condition});
+        const quizzes = await Quiz.find({$and:[{$or:condition},{is_completed:completed}]});
 
         return res.status(200).json({
             success:true,
@@ -133,4 +138,4 @@ const getQuiz = async (req,res)=>{
     }
 }
 
-module.exports = {createQuiz,getQuizByFaculty,getPastQuizByFaculty,getQuizBySubject,getQuizByStudent,getQuiz};
+module.exports = {createQuiz,getQuizByFaculty,getQuizBySubject,getQuizByStudent,getQuiz};

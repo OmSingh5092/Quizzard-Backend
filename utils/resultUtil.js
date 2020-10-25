@@ -27,3 +27,16 @@ module.exports.getPercentageStudents = (results)=>{
     })
 }
 
+module.exports.calculateScore = (responses,questions)=>{
+    var score = 0;
+    questions.map((item,index)=>{
+        if(item.correct == responses[index]){
+            score+=item.positive;
+        }else{
+            score-=item.negative;
+        }
+    })
+
+    return score;
+}
+
