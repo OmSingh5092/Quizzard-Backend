@@ -18,10 +18,9 @@ module.exports.getAverageMarks = (results)=>{
 
 module.exports.getPercentageStudents = (results)=>{
     const subjectId = results[0].subject;
-    Student.find({subjects:{$all:[subjectId]}})
+    return Student.find({subjects:{$all:[subjectId]}})
     .then((docs)=>{
         const total = docs.length;
-
         return results.length/total;
     }).catch((err)=>{
         console.log("Error",err);

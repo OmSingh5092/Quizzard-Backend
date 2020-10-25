@@ -1,7 +1,10 @@
 const Result = require('../database/schema/result');
 const Quiz = require('../database/schema/quiz');
+const Student = require('../database/schema/student');
 
 const util = require('../utils/resultUtil');
+const { json } = require('express');
+const result = require('../database/schema/result');
 
 const createResult = async (req,res)=>{
     const id = req.user.id;
@@ -91,26 +94,38 @@ const getResultByQuizandStudent = (req,res)=>{
     })
 }
 
-const getResultOfSubject = (req,res)=>{
+const getResultOfSubject = async (req,res)=>{
     const subjectId = req.headers.subject;
 
-    Result.find({subject:subjectId})
-    .then((docs)=>{
-        console.log("Docs",docs);
+    try{
+        const results = await Result.find({subject:subjectId})
+        const attendance = await  util.getPercentageStudents(results)
+        
+        var studentIds = [];
+
+        results.map((item,index)=>{
+            studentIds.push(item.student);
+        });
+
+        const students = await Student.find({_id:{$all:studentIds}});
+        console.log("Students",students);
+
+        console.log("Attendance",attendance);
         return res.status(200).json({
             success:true,
-            results:docs,
-            average:util.getAverageMarks(docs),
-            attendance:util.getPercentageStudents(docs),
-        })
-    }).catch((err)=>{
+            results:results,
+            students:students,
+            average:util.getAverageMarks(results),
+            attendance: attendance
+        });
+    }catch(err){
         console.log("Error",err);
 
         return res.status(500).json({
             success:false,
             msg:"Internal Server Error!",
         });
-    });
+    }
 
 }
 
