@@ -1,3 +1,4 @@
+const { response } = require('express');
 const Result = require('../database/schema/result');
 const Student = require('../database/schema/student');
 
@@ -28,9 +29,12 @@ module.exports.getPercentageStudents = (results)=>{
 }
 
 module.exports.calculateScore = (responses,questions)=>{
+
     var score = 0;
     questions.map((item,index)=>{
-        if(item.correct == responses[index]){
+        if(responses[index] == 0){
+            
+        }if(item.correct == responses[index]){
             score+=item.positive;
         }else{
             score-=item.negative;

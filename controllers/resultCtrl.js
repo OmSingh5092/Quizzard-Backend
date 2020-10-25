@@ -30,9 +30,12 @@ const createResult = async (req,res)=>{
     
 }
 
-const updateResult = (req,res)=>{
+const updateResult = async (req,res)=>{
     const body = req.body;
     console.log("Body",body);
+    const quiz = await Quiz.findById(body.quiz);
+    //Calculating the score
+    body.score = util.calculateScore(body.responses,quiz.questions);
     Result.updateOne({_id:body._id},body)
     .then((doc)=>{
         return res.status(200).json({
