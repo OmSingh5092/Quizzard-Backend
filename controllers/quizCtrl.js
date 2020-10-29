@@ -19,6 +19,8 @@ const createQuiz = (req,res)=>{
             Quiz.updateOne({_id:doc._id},{is_live:true})
             .then((doc)=>{
                 websocket.quizSocket.quizStart(doc._id);
+            }).catch((err)=>{
+                console.log("Error",err);
             })
             
         }, parseInt(quiz.start_time)-date.getTime());
@@ -29,6 +31,8 @@ const createQuiz = (req,res)=>{
             Quiz.updateOne({_id:doc._id},{is_live:false,is_completed:true})
             .then((doc)=>{
                 websocket.quizSocket.quizStop(doc._id);
+            }).catch((err)=>{
+                console.log("Error",err);
             })
             
         },parseInt(quiz.end_time)-date.getTime())
@@ -45,6 +49,43 @@ const createQuiz = (req,res)=>{
         })
     })
 
+}
+
+const updateQuiz = (req,res)=>{
+    const id = req.user.id;
+    const body = req.body;
+    Quiz.updateOne({_id:body._id},body)
+    .then((doc)=>{
+        return res.status(200).json({
+            success:true,
+            quiz:doc,
+        })
+    }).catch((err)=>{
+        console.log("Error",err);
+        return res.status(500).json({
+            success:false,
+            msg:"Update Unsuccessfull",
+        })
+    })
+}
+
+const deleteQuiz = (req,res) =>{
+    const quizId = req.headers.id;
+    const id = req.user.id;
+    
+
+    Quiz.findByIdAndDelete(quizId).then((doc)=>{
+        return res.status(200).json({
+            success:true,
+            quiz:doc,
+        })
+    }).catch((err)=>{
+        console.log("Error",err);
+        return res.status(500).json({
+            success:false,
+            msg:"Delete Unsuccessfull!",
+        })
+    })
 }
 
 const getQuizByFaculty = (req,res)=>{
@@ -138,4 +179,4 @@ const getQuiz = async (req,res)=>{
     }
 }
 
-module.exports = {createQuiz,getQuizByFaculty,getQuizBySubject,getQuizByStudent,getQuiz};
+module.exports = {createQuiz,deleteQuiz,updateQuiz,getQuizByFaculty,getQuizBySubject,getQuizByStudent,getQuiz};

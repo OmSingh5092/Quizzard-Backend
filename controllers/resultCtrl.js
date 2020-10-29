@@ -16,6 +16,8 @@ const createResult = async (req,res)=>{
         result.student = id;
         const quiz = await Quiz.findById(result.quiz);
         result.score = util.calculateScore(result.responses,quiz.questions)
+        result.total = util.calculateTotal(quiz.questions);
+        result.submit_time = new Date().getTime();
         const doc = await result.save()
 
         return res.status(200).json({
@@ -39,6 +41,7 @@ const updateResult = async (req,res)=>{
     const quiz = await Quiz.findById(body.quiz);
     //Calculating the score
     body.score = util.calculateScore(body.responses,quiz.questions);
+    body.submit_time = new Date().getTime();
     Result.updateOne({_id:body._id},body)
     .then((doc)=>{
         return res.status(200).json({
@@ -94,6 +97,24 @@ const getResultByQuizandStudent = (req,res)=>{
     })
 }
 
+const getResultByStudent = (req,res)=>{
+    const id = req.user.id;
+
+    Result.find({student:id})
+    .then((docs)=>{
+        return res.status(200).json({
+            success:true,
+            results:docs,
+        })
+    }).catch((err)=>{
+        console.log("Error",err);
+        return res.status(500).json({
+            success:false,
+            msg:"Internal Server Error",
+        })
+    })
+}
+
 const getResultOfSubject = async (req,res)=>{
     const subjectId = req.headers.subject;
 
@@ -108,13 +129,18 @@ const getResultOfSubject = async (req,res)=>{
         });
 
         const students = await Student.find({_id:{$all:studentIds}});
-        console.log("Students",students);
+        const studentMap = {};
+
+        students.map((item,index)=>{
+            studentMap[item._id] = item;
+        })
+        console.log("Students",studentMap);
 
         console.log("Attendance",attendance);
         return res.status(200).json({
             success:true,
             results:results,
-            students:students,
+            students:studentMap,
             average:util.getAverageMarks(results),
             attendance: attendance
         });
@@ -133,4 +159,4 @@ const getResultOfStudent = (req,res)=>{
 
 }
 
-module.exports = {createResult,updateResult,getResultById,getResultByQuizandStudent,getResultOfSubject};
+module.exports = {createResult,updateResult,getResultByStudent,getResultById,getResultByQuizandStudent,getResultOfSubject};

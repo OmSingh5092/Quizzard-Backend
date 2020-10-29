@@ -76,4 +76,22 @@ const removeSubject = (req,res)=>{
     })
 }
 
-module.exports = {updateProfile,getProfile,addSubject,removeSubject}
+const getAllStudents = (req,res)=>{
+    const id = req.user.id;
+    Student.find({_id:{$ne:id}})
+    .then((docs)=>{
+        return res.status(200).json({
+            success:true,
+            students:docs,
+        })
+    }).catch((err)=>{
+        console.log("Error",err);
+
+        return res.status(500).json({
+            success:false,
+            msg:"Internal Server Error!",
+        })
+    })
+}
+
+module.exports = {updateProfile,getProfile,addSubject,removeSubject,getAllStudents}
