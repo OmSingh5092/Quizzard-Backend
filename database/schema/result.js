@@ -22,6 +22,9 @@ const result = new Schema(
         submit_time:{
             type:String,
         },
+        end_time:{
+            type:String,
+        },
         responses:{
             type:Array,
         }

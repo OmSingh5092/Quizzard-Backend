@@ -5,6 +5,7 @@ const Student = require('../database/schema/student');
 const util = require('../utils/resultUtil');
 const { json } = require('express');
 const result = require('../database/schema/result');
+const { $where } = require('../database/schema/student');
 
 const createResult = async (req,res)=>{
     const id = req.user.id;
@@ -78,15 +79,13 @@ const getResultByQuizandStudent = (req,res)=>{
     const quiz = req.headers.quiz;
     const id = req.user.id;
 
-    console.log("Quiz",quiz);
-    console.log("Id",id);
-
-    Result.findOne({$and:[{quiz:quiz},{student:id}]})
+    Result.findOne({$and:[{quiz:quiz}]})
     .then((doc)=>{
         console.log("Document",doc);
+        
         return res.status(200).json({
             success:true,
-            result:doc
+            result:doc,
         })
     }).catch((err)=>{
         console.log("Error",err);
@@ -99,12 +98,20 @@ const getResultByQuizandStudent = (req,res)=>{
 
 const getResultByStudent = (req,res)=>{
     const id = req.user.id;
-
+    
     Result.find({student:id})
     .then((docs)=>{
+        const date = new Date().getTime();
+        var validResults =[];
+        docs.map((item,index)=>{
+            if(parseInt(item.end_time)<date){
+                validResults.push(item);
+            }
+        })
+        console.log("Valid Results",validResults);
         return res.status(200).json({
             success:true,
-            results:docs,
+            results:validResults,
         })
     }).catch((err)=>{
         console.log("Error",err);
