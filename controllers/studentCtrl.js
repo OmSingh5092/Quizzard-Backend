@@ -94,4 +94,7 @@ const getAllStudents = (req,res)=>{
     })
 }
 
+
+
+
 module.exports = {updateProfile,getProfile,addSubject,removeSubject,getAllStudents}

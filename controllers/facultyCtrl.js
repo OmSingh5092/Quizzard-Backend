@@ -91,4 +91,6 @@ const getAllFaculties = (req,res)=>{
     })
 }
 
+
+
 module.exports = {updateProfile,getProfile,addSubject,removeSubject,getAllFaculties}

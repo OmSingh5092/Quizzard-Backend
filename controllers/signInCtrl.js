@@ -132,7 +132,7 @@ const studentGoogleSignIn = async (req,res)=>{
     }    
 }
 
-const adminGoogleSignIn = (req,res)=>{
+const adminGoogleSignIn = async(req,res)=>{
 
     const idToken = req.body.idToken;
     const client = new OAuth2Client(config.gcp.clientId);
