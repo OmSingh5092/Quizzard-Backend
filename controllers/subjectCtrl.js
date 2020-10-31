@@ -58,7 +58,6 @@ const getSubjectsByStudent = async(req,res)=>{
 const addSubject = (req,res)=>{
 
     const body = req.body;
-
     const subject = new Subject(body);
 
     subject.save()
@@ -91,4 +90,21 @@ const getAllSubjects = (req,res)=>{
     })
 }
 
-module.exports = {getSubject,getSubjectsByStudent,addSubject,getAllSubjects};
+const removeSubject = (req,res)=>{
+    const subject = req.headers.subject;
+    Subject.deleteOne({_id:subject})
+    .then((docs)=>{
+        return res.status(200).json({
+            success:true,
+            msg:"Delete Successfull!",
+        })
+    }).catch((err)=>{
+        console.log("Error",err);
+        return res.status(500).json({
+            success:false,
+            msg:"Internal Server Error!"
+        })
+    })
+}
+
+module.exports = {getSubject,getSubjectsByStudent,addSubject,getAllSubjects,removeSubject};

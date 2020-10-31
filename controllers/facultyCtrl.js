@@ -36,43 +36,6 @@ const getProfile = (req,res)=>{
     })
 }
 
-const addSubject = (req,res)=>{
-    const id =  req.user.id;
-    const subjectId = req.headers.subject_id;
-    Faculty.updateOne({_id:id},{$push:{subjects:subjectId}})
-    .then((doc)=>{
-        res.status(200).json({
-            success:true,
-            msg:"Update Succesfull!",
-        })
-    }).catch((err)=>{
-        console.log("Error",err);
-        res.status(500).json({
-            success:false,
-            msg:"Update unsuccessfull!",
-        })
-    })
-}
-
-const removeSubject = (req,res)=>{
-    const id = req.user.id;
-    const subjectId = req.headers.subject_id;
-
-    Faculty.updateOne({_id:id},{$pull:{subjects:subjectId}})
-    .then((doc)=>{
-        return res.status(200).json({
-            success:true,
-            msg:"Remove subject Successfull!",
-        })
-    }).catch((err)=>{
-        console.log("Error",err);
-        res.status(500).json({
-            success:false,
-            msg:"Remove subject unsuccessfull!",
-        })
-    })
-}
-
 const getAllFaculties = (req,res)=>{
     const id = req.user.id;
     Faculty.find({_id:{$ne:id}})
@@ -91,6 +54,4 @@ const getAllFaculties = (req,res)=>{
     })
 }
 
-
-
-module.exports = {updateProfile,getProfile,addSubject,removeSubject,getAllFaculties}
+module.exports = {updateProfile,getProfile,getAllFaculties}
