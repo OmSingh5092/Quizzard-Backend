@@ -16,6 +16,7 @@ const subjectRoute = require('./routes/subjectRouter');
 const quizRoute = require('./routes/quizRouter');
 const resultRoute = require('./routes/resultRouter');
 const adminRoute = require('./routes/adminRouter');
+const chatRoute = require('./routes/chatRouter');
 
 //Applying routes
 app.use('/api/signin',signInRoute);
@@ -25,6 +26,7 @@ app.use('/api/subject',subjectRoute);
 app.use('/api/quiz',quizRoute);
 app.use('/api/result',resultRoute);
 app.use('/api/admin',adminRoute);
+app.use('/api/chat',chatRoute);
 
 const server = http.createServer(app);
 
