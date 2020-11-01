@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('../config');
 
-mongoose.connect(config.database.local.uri, { useNewUrlParser: true });
+mongoose.connect(config.database.prod.uri, { useNewUrlParser: true });
 
 const connection = mongoose.connection;
 
