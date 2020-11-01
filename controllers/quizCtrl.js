@@ -2,6 +2,7 @@ const { $where } = require('../database/schema/quiz');
 const Quiz = require('../database/schema/quiz');
 const Student = require('../database/schema/student');
 const websocket = require('../websocket');
+const schedule = require('node-schedule');
 
 const createQuiz = (req,res)=>{
     const body = req.body;
@@ -10,32 +11,30 @@ const createQuiz = (req,res)=>{
     quiz.faculty = id;
     quiz.save()
     .then((doc)=>{
-        const date = new Date();
+        var date = new Date(parseInt(doc.start_time));
         console.log("Quiz",doc);
         //Setting timer for making quiz live
      
-        setTimeout(function(){
+        schedule.scheduleJob(date,function(){
             console.log("Making quiz live!");
             Quiz.updateOne({_id:doc._id},{is_live:true})
-            .then((doc)=>{
+            .then((update)=>{
                 websocket.quizSocket.quizStart(doc._id);
             }).catch((err)=>{
                 console.log("Error",err);
             })
-            
-        }, parseInt(quiz.start_time)-date.getTime());
-
+        })
+        date = new Date(parseInt(doc.end_time));
         //Setting timer for stopping live quiz
-        setTimeout(function(){
+        schedule.scheduleJob(date,function(){
             console.log("Stopping live quiz!")
             Quiz.updateOne({_id:doc._id},{is_live:false,is_completed:true})
-            .then((doc)=>{
+            .then((update)=>{
                 websocket.quizSocket.quizStop(doc._id);
             }).catch((err)=>{
                 console.log("Error",err);
             })
-            
-        },parseInt(quiz.end_time)-date.getTime())
+        })
 
         return res.status(200).json({
             success:true,

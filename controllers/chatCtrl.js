@@ -4,7 +4,7 @@ module.exports.getAllChats = (req,res)=>{
     const id = req.user.id;
     const sender = req.headers.sender;
 
-    Chat.find({$and:[{$or:[{sender:id},{receiver:sender}]},{$or:[{sender:sender},{receiver:id}]}]})
+    Chat.find({$or:[{$or:[{sender:id},{receiver:sender}]},{$or:[{sender:sender},{receiver:id}]}]})
     .then((docs)=>{
         return res.status(200).json({
             success:true,

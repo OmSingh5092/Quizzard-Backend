@@ -82,7 +82,7 @@ module.exports.getStudents = (req,res)=>{
 module.exports.getStudentById = (req,res)=>{
     const student= req.headers.student;
 
-    Faculty.findOne({_id:student})
+    Student.findOne({_id:student})
     .then((doc)=>{
         return res.status(200).json({
             success:true,

@@ -15,6 +15,9 @@ const chat = new Schema(
         },
         media:{
             type:String
+        },
+        time:{
+            type:String,
         }
     },{
         timestamps:true
